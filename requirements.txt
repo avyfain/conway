@@ -1,0 +1,15 @@
+Flask==0.10.1
+Jinja2==2.8
+MarkupSafe==0.23
+Werkzeug==0.11.4
+decorator==4.0.9
+gunicorn==19.4.5
+imageio==1.5
+imgurpython==1.1.7
+itsdangerous==0.24
+moviepy==0.2.2.11
+numpy==1.10.4
+pypng==0.0.18
+requests==2.9.1
+tqdm==3.8.0
+wsgiref==0.1.2
