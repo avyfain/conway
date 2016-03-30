@@ -14,6 +14,7 @@ from datetime import datetime
 
 
 app = Flask(__name__)
+app.debug = True
 
 @app.route('/')
 def form():
