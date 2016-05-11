@@ -3,32 +3,24 @@ conway.server
 ~~~~~~~~~~~~~~~
 This module contains the web server logic.
 """
+from flask import Flask, request, make_response
 
-from game import Board
-from images import draw_frames, create_gif, upload_img
-from examples import SOME
-
-from flask import Flask, request, render_template, make_response
-from functools import wraps, update_wrapper
-from datetime import datetime
+from conway.game import Board
+from conway.images import draw_frames, create_gif, upload_img
+from conway.examples import SOME
+from conway.utils import crossdomain
 
 
 app = Flask(__name__)
 app.debug = True
 
-@app.route('/')
-def form():
-    """
-    Renders the form file html.
-    """
-    return render_template("form.html")
-
-@app.route('/', methods=['POST'])
+@app.route('/test', methods=['GET', 'POST', 'OPTIONS'])
+@crossdomain(origin='*')
 def form_post():
     print(request.form)
     pat = request.form['input_pattern']
     processed_pat = imgur_from_pattern(pat)
-    return render_template("form.html", gif=processed_pat)
+    return processed_pat
 
 def imgur_from_pattern(pattern=SOME):
     """
@@ -37,8 +29,8 @@ def imgur_from_pattern(pattern=SOME):
     """
     draw_frames(Board(pattern))
     name = create_gif()
-    link = upload_img(name)
-    return(link)
+    # link = upload_img(name, description=pattern)
+    return(name)
 
 if __name__ == '__main__':
     app.run()
