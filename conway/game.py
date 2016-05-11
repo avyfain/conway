@@ -10,22 +10,17 @@ Partially derived from Jason Keene's gist:
 https://gist.github.com/jasonkeene/2140276
 """
 
-import png
-import sys
+from itertools import chain
 
-from itertools import product, chain
-
-BLACK = u' \u25A0'
-WHITE = u' \u25A1'
+# product((-1, 0, 1), (-1, 0, 1))
+NEIGHBOR_SET = ((0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, 0), (1, -1), (1, 1))
 
 def neighbors(point):
     """
     Returns the set of adjacent points to the given point.
     """
     x, y = point
-    for dx, dy in product((-1, 0, 1), (-1, 0, 1)):
-        if (dx, dy) != (0, 0):
-            yield x + dx, y + dy
+    return set((x + dx, y + dy) for dx, dy in NEIGHBOR_SET)
 
 class Board(object):
     """The :class:`Board <Board>` object, which contains
@@ -71,7 +66,7 @@ class Board(object):
         newstate = set()
         recalc = self.points | set(chain(*(neighbors(point) for point in self.points)))
         for point in recalc:
-            count = sum((neighbor in self.points) for neighbor in neighbors(point))
+            count = len(self.points & neighbors(point))
             if count == 3 or (count == 2 and point in self.points):
                 newstate.add(point)
         self.points = newstate
@@ -97,30 +92,3 @@ class Board(object):
         Returns true if a cell is part of the bounding box.
         """
         return all(0 <= v <= self.size for v in cell)
-
-    def to_png(self, to_console=False):
-        """
-        Serializes the board as a png file.
-        If the `to_console` flag is True, it will print a string representation
-        of the board to stdout, in addition to the file.
-        """
-        png_size = (self.size + 1)*4
-        writer = png.Writer(png_size, png_size, greyscale=True, bitdepth=1)
-
-        lines = []
-        line = []
-        for i, j in product(range(self.size + 1), range(self.size + 1)):
-            line.extend([0]*4 if (i, j) in self.points else [1]*4)
-            if to_console:
-                sys.stdout.write(BLACK if (i, j) in self.points else WHITE)
-            if j == self.size:
-                for _ in range(4):
-                    lines.append(line)
-                if to_console:
-                    print()
-                line = []
-
-        self.frame_num += 1
-        frame_name = str(self.frame_num) + '.png'
-        with open(frame_name, 'wb') as frame:
-            writer.write(frame, lines)
