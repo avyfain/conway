@@ -9,10 +9,9 @@ http://pyvideo.org/video/880/stop-writing-classes
 Partially derived from Jason Keene's gist:
 https://gist.github.com/jasonkeene/2140276
 """
+from itertools import chain, product
 
-from itertools import chain
-
-# product((-1, 0, 1), (-1, 0, 1))
+# product((-1, 0, 1), (-1, 0, 1)) # remove (0,0)
 NEIGHBOR_SET = ((0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, 0), (1, -1), (1, 1))
 
 def neighbors(point):
@@ -27,7 +26,7 @@ class Board(object):
     the cells of a given Conway pattern.
     """
 
-    def __init__(self, pattern, size=50):
+    def __init__(self, pattern, size=100):
         """Takes string representations of GoL patterns from
         http://www.argentum.freeserve.co.uk/lex.htm and returns"""
         self.size = size -1
@@ -41,9 +40,9 @@ class Board(object):
             if char == '\n':
                 i = 0
                 j += 1
-            elif char == '.':
+            elif char == '1':
                 i += 1
-            elif char == 'O':
+            elif char == '0':
                 self.points.add((i, j))
                 i += 1
 
@@ -92,3 +91,15 @@ class Board(object):
         Returns true if a cell is part of the bounding box.
         """
         return all(0 <= v <= self.size for v in cell)
+
+    def scale(self, square_size):
+        """
+        Turns the board into a series of 0s and 1s scaled up by `square_size`
+        """
+        line = []
+        for i, j in product(range(self.size + 1), range(self.size + 1)):
+            line.extend([0]*square_size if (i, j) in self.points else [1]*square_size)
+            if j == self.size:
+                for _ in range(square_size):
+                    yield line
+                line = []
