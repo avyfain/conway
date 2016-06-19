@@ -3,34 +3,50 @@ conway.server
 ~~~~~~~~~~~~~~~
 This module contains the web server logic.
 """
-from flask import Flask, request, make_response
 
 from conway.game import Board
-from conway.images import draw_frames, create_gif, upload_img
-from conway.examples import SOME
-from conway.utils import crossdomain
+from conway.images import draw_frames, create_gif
+from conway.tweet import twitter
 
+def grab_random_tweet():
+    tweet = None
+    max_id = None
+    while not tweet:
+        tweets = twitter.search('algorithm', max_id=max_id)
+        tweet = next(tweet for tweet in tweets if '://' not in tweet.text and \
+                                                  'RT'  not in tweet.text)
+        print(tweet.text)
+        max_id = tweets[-1].id
+    return tweet
 
-app = Flask(__name__)
-app.debug = True
+def reply_with_conway():
+    original_tweet = grab_random_tweet()
+    print(original_tweet)
+    pattern = create_pattern_from_tweet(original_tweet)
+    gif_name = gif_from_pattern(pattern)
+    user_name = original_tweet.user.screen_name
+    message = "Hi {}, look at the complexity of your tweet!".format(user_name)
+    twitter.update_with_media(gif_name, message)
 
-@app.route('/test', methods=['GET', 'POST', 'OPTIONS'])
-@crossdomain(origin='*')
-def form_post():
-    print(request.form)
-    pat = request.form['input_pattern']
-    processed_pat = imgur_from_pattern(pat)
+def get_word_bin(string):
+    return ''.join(format(ord(x), 'b') for x in string)
+
+def pattern_from_string(string):
+    words = string.split(' ')
+    return '\n'.join([get_word_bin(word) for word in words])
+
+def create_pattern_from_tweet(original_tweet):
+    pat = pattern_from_string(original_tweet.text)
     return processed_pat
 
-def imgur_from_pattern(pattern=SOME):
+def gif_from_pattern(pattern):
     """
     Main application logic: given a conway pattern
     from the lexicon, it returns a link to the image on imgur
     """
     draw_frames(Board(pattern))
     name = create_gif()
-    # link = upload_img(name, description=pattern)
-    return(name)
+    return name
 
 if __name__ == '__main__':
-    app.run()
+    reply_with_conway()
