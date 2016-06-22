@@ -49,6 +49,9 @@ def draw_frames(board, max_steps=150):
     delete_pngs()
 
     for _ in range(max_steps):
+        if _ % 5 == 0:
+            print("Processing frame {}".format(_))
+
         cur_board_repr = hash(board)
         if cur_board_repr in seen:
             break
