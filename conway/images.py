@@ -19,7 +19,7 @@ def create_gif():
     file_names = (fn for fn in os.listdir('.') if fn.endswith('.png'))
     s_file_names = sorted(file_names, key=lambda x: int(x.split('.')[0]))
     clip = mpy.ImageSequenceClip(s_file_names, fps=12)
-    name = 'img/' + str(uuid4()) + '.gif'
+    name = '{}.gif'.format(uuid4())
     clip.write_gif(name, fps=12)
     delete_pngs()
     return name
