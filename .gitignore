@@ -72,3 +72,4 @@ target/
 .DS_Store
 
 img/*
+dump.rdb

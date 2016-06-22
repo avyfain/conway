@@ -11,14 +11,6 @@ import png
 
 import moviepy.editor as mpy
 
-CLIENT_ID = os.environ.get('CLIENT_ID')
-CLIENT_SECRET = os.environ.get('CLIENT_SECRET')
-
-ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN')
-REFRESH_TOKEN = os.environ.get('REFRESH_TOKEN')
-
-ALBUM_HASH = os.environ.get('ALBUM_HASH')
-
 DEFAULT_SQUARE_SIZE = 4
 BLACK = u' \u25A0'
 WHITE = u' \u25A1'
@@ -46,7 +38,7 @@ def to_png(board, square_size=DEFAULT_SQUARE_SIZE):
 
     lines = board.scale(square_size)
     board.frame_num += 1
-    frame_name = str(board.frame_num) + '.png'
+    frame_name = '{}.png'.format(board.frame_num)
     with open(frame_name, 'wb') as frame:
         writer.write(frame, lines)
 
