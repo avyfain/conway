@@ -16,7 +16,7 @@ def grab_tweets():
     tweet = None
     max_id = r.get('max_id')
     while not tweet:
-        tweets = twitter_client.search('@tweetgameoflife') #, max_id)
+        tweets = twitter_client.search('@tweetgameoflife', max_id)
         try:
             tweet = next(tweet for tweet in tweets if '://' not in tweet.text and \
                                                       not tweet.text.startswith('RT'))
