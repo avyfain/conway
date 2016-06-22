@@ -74,3 +74,4 @@ target/
 img/*
 dump.rdb
 *.gif
+!misc/example.gif
