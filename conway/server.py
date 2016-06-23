@@ -16,11 +16,11 @@ def grab_tweets():
     max_id = r.get('max_id')
     tweets = twitter_client.search('@tweetgameoflife', since_id=max_id)
     if tweets:
-        r.set('max_id', str(tweets[0].id + 1))
+        r.set('max_id', str(tweets[0].id))
     else:
         print("No one is tweeting, try again later :(")
     
-    for tweet in tweets:
+    for tweet in reversed(tweets):
         if '://' not in tweet.text and not tweet.text.startswith('RT'):
             yield tweet
 
@@ -43,8 +43,7 @@ def create_pattern_from_tweet(original_tweet):
 
 def gif_from_pattern(pattern):
     """
-    Main application logic: given a conway pattern
-    from the lexicon, it returns a link to the image on imgur
+    Main application logic: given a conway pattern returns a link to the image on imgur
     """
     draw_frames(Board(pattern))
     name = create_gif()
