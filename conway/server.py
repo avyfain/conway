@@ -13,6 +13,10 @@ import redis
 r = redis.from_url(os.environ.get("REDIS_URL"))
 
 def grab_tweets():
+    """
+    Searches for the list of tweets since the last job execution.
+    Yields relevant ones.
+    """
     max_id = r.get('max_id')
     tweets = twitter_client.search('@tweetgameoflife', since_id=max_id)
     if tweets:
@@ -26,6 +30,9 @@ def grab_tweets():
 
 
 def reply_with_conway(original_tweet):
+    """
+    Given a tweet, builds a gif and replies to the user.
+    """
     pattern = create_pattern_from_tweet(original_tweet)
     gif_name = gif_from_pattern(pattern)
     user_name = original_tweet.user.screen_name
@@ -35,21 +42,36 @@ def reply_with_conway(original_tweet):
                               in_reply_to_status_id=original_tweet.id_str)
 
 def get_word_bin(string):
+    """
+    Given a string, returns its binary representation in 0s and 1s
+    """
     return ''.join(format(ord(x), 'b') for x in string)
 
 def create_pattern_from_tweet(original_tweet):
+    """
+    Given a tweet, returns a pattern of 0s, 1s and \n characters
+    to be consumed to create a game of life board.
+    """
     words = original_tweet.text.split(' ')
     return '\n'.join([get_word_bin(word) for word in words])
 
 def gif_from_pattern(pattern):
     """
-    Main application logic: given a conway pattern returns a link to the image on imgur
+    Given a conway pattern string, builds a board, draws its frames and writes the .gif file
+    Returns name of new file.
     """
     draw_frames(Board(pattern))
     name = create_gif()
     return name
 
-if __name__ == '__main__':
+def main():
+    """
+    Main application logic
+    """
     tweets = grab_tweets()
     for tweet in tweets:
         reply_with_conway(tweet)
+
+
+if __name__ == '__main__':
+    main()
