@@ -12,8 +12,6 @@ import png
 import moviepy.editor as mpy
 
 DEFAULT_SQUARE_SIZE = 4
-BLACK = u' \u25A0'
-WHITE = u' \u25A1'
 
 def create_gif():
     file_names = (fn for fn in os.listdir('.') if fn.endswith('.png'))

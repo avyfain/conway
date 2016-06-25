@@ -12,6 +12,8 @@ from twitter import twitter_client
 import redis
 r = redis.from_url(os.environ.get("REDIS_URL"))
 
+my_handle = "@" + twitter_client.me().screen_name
+
 def grab_tweets():
     """
     Searches for the list of tweets since the last job execution.
@@ -53,9 +55,7 @@ def create_pattern_from_tweet(original_tweet):
     to be consumed to create a game of life board.
     """
     words = original_tweet.text.split(' ')
-    my_handle = "@" + twitter_client.me().screen_name
-    words = filter(lambda w: w != my_handle, words)
-    return '\n'.join([get_word_bin(word) for word in words])
+    return '\n'.join(get_word_bin(word) for word in words if word != my_handle)
 
 def gif_from_pattern(pattern):
     """
