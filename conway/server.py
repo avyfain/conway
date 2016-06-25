@@ -53,6 +53,8 @@ def create_pattern_from_tweet(original_tweet):
     to be consumed to create a game of life board.
     """
     words = original_tweet.text.split(' ')
+    my_handle = "@" + twitter_client.me().screen_name
+    words = filter(lambda w: w != my_handle, words)
     return '\n'.join([get_word_bin(word) for word in words])
 
 def gif_from_pattern(pattern):
