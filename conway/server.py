@@ -20,7 +20,7 @@ def grab_tweets():
     Yields relevant ones.
     """
     max_id = r.get('max_id')
-    tweets = twitter_client.search('@tweetgameoflife', since_id=max_id)
+    tweets = twitter_client.search(my_handle, since_id=max_id)
     if tweets:
         r.set('max_id', str(tweets[0].id))
     else:
