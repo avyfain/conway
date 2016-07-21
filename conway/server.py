@@ -38,7 +38,7 @@ def reply_with_conway(original_tweet):
     pattern = create_pattern_from_tweet(original_tweet)
     gif_name = gif_from_pattern(pattern)
     user_name = original_tweet.user.screen_name
-    message = "Hi @{}, look at the complexity of your tweet!".format(user_name)
+    message = "Hi @{}, look at the complexity of your tweet! #nuclai16bot".format(user_name)
     twitter_client.update_with_media(filename=gif_name, 
                               status=message, 
                               in_reply_to_status_id=original_tweet.id_str)
