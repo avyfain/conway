@@ -11,7 +11,10 @@ https://gist.github.com/jasonkeene/2140276
 """
 from itertools import chain, product
 
-# product((-1, 0, 1), (-1, 0, 1)) # remove (0,0)
+# This comes from product((-1, 0, 1), (-1, 0, 1)), removing (0,0). 
+# We compute it once instead of on each run simply for an optimization.
+# This is a constant, and in fact, we could precompute the neighbors for
+# all the board ahead of time, or cache it somewhere if it mattered.
 NEIGHBOR_SET = ((0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, 0), (1, -1), (1, 1))
 
 def neighbors(point):

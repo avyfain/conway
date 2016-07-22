@@ -52,6 +52,8 @@ def draw_frames(board, max_steps=150):
 
         cur_board_repr = hash(board)
         if cur_board_repr in seen:
+            for _ in range(10):
+                to_png(board)
             break
         to_png(board)
         seen.add(cur_board_repr)
