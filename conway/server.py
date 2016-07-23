@@ -97,11 +97,11 @@ def main():
     """
     Main application logic
     """
-    # tweets = grab_tweets()
-    # for tweet in tweets:
-    #     reply_with_conway(tweet)
+    tweets = grab_tweets()
+    for tweet in tweets:
+        reply_with_conway(tweet)
 
-    if random.random() > 0.8:
+    if random.random() > 0.9:
         print("Random tweet! Let's see what we get...")
         generate_random_tweet()
 
