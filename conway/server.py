@@ -13,7 +13,10 @@ from images import draw_frames, create_gif
 from twitter import twitter_client
 
 import redis
-r = redis.from_url(os.environ.get("REDIS_URL"))
+r = redis.from_url(os.environ.get("REDIS_URL", "redis://localhost:6379"))
+
+HASHTAGS = os.environ.get("HASHTAGS")
+PROB = float(os.environ.get("PROB", "0.9"))
 
 my_handle = "@" + twitter_client.me().screen_name
 
@@ -41,7 +44,7 @@ def reply_with_conway(original_tweet):
     pattern = create_pattern_from_text(original_tweet.text)
     gif_name = gif_from_pattern(pattern)
     user_name = original_tweet.user.screen_name
-    message = "Hi @{}, look at the complexity of your tweet!".format(user_name)
+    message = "Hi @{}, look at the complexity of your tweet!\n{}".format(user_name, HASHTAGS)
     twitter_client.update_with_media(filename=gif_name, 
                                      status=message, 
                                      in_reply_to_status_id=original_tweet.id_str)
@@ -64,6 +67,7 @@ def generate_random_tweet():
         deck.append(char)
 
     text = ''.join(deck).strip()
+    text = text + '\n' + HASHTAGS
 
     pattern = create_pattern_from_text(text)
     gif_name = gif_from_pattern(pattern)
@@ -101,9 +105,11 @@ def main():
     for tweet in tweets:
         reply_with_conway(tweet)
 
-    if random.random() > 0.9:
+    if random.random() > PROB:
         print("Random tweet! Let's see what we get...")
         generate_random_tweet()
+    else:
+        print("No random tweet this time!")
 
 if __name__ == '__main__':
     main()
