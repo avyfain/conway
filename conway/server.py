@@ -66,10 +66,10 @@ def generate_random_tweet():
         deck.appendleft(char)
         deck.append(char)
 
-    text = ''.join(deck).strip()
-    text = text + '\n' + HASHTAGS
+    rand_emoji = ''.join(deck).strip()
+    text = rand_emoji + '\n' + HASHTAGS
 
-    pattern = create_pattern_from_text(text)
+    pattern = create_pattern_from_text(rand_emoji)
     gif_name = gif_from_pattern(pattern)
     twitter_client.update_with_media(filename=gif_name, 
                                      status=text)
